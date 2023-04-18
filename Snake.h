@@ -31,6 +31,8 @@ public:
     bool eaten(COORD food);
 
     COORD get_pos();
+
+    void reset();
 };
 
 #endif // SNAKE_H

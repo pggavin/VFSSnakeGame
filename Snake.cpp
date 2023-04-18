@@ -47,3 +47,18 @@ bool Snake::eaten(COORD food)
     if (pos.X == food.X && pos.Y == food.Y) return true;
     return false;
 }
+
+void Snake::reset()
+{
+    // Generate a random position for the snake
+    COORD new_pos = { rand() % WIDTH, rand() % HEIGHT };
+
+    // Create a new Snake object with the random position and initial length of 1
+    Snake new_snake(new_pos, 1);
+
+    // Copy the new snake's state (position, direction, body) to this snake object
+    pos = new_snake.pos;
+    dir = new_snake.dir;
+    len = new_snake.len;
+    body = new_snake.body;
+}
