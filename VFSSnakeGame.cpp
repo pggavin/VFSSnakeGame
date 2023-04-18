@@ -67,9 +67,9 @@ int main()
     {
         board();
 
-        if (kbhit())
+        if (_kbhit())
         {
-            switch (getch())
+            switch (_getch())
             {
             case 'w': snake.direction('u'); break;
             case 'a': snake.direction('l'); break;
