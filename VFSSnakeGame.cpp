@@ -1,16 +1,9 @@
-﻿#include <iostream>
-#include <conio.h>
-#include <cstdlib>
-#include <ctime>
-
-#include "Snake.h"
-#include "Food.h"
-
+﻿#include <conio.h>
 #include <chrono>
 #include <thread>
 
-#include "SoundPlayer.h"
 #include "Renderer.h"
+#include "SoundPlayer.h"
 
 void update(Snake& snake, Food& food, bool& game_over, int& score);
 void start_game();
@@ -52,9 +45,9 @@ void update(Snake& snake, Food& food, bool& game_over, int& score)
     {
         switch (_getch())
         {
-            case 'w': snake.change_direction(UP); break;
-            case 'a': snake.change_direction(LEFT); break;
-            case 's': snake.change_direction(DOWN); break;
+            case 'w': snake.change_direction(UP   ); break;
+            case 'a': snake.change_direction(LEFT ); break;
+            case 's': snake.change_direction(DOWN ); break;
             case 'd': snake.change_direction(RIGHT); break;
         }
     }
