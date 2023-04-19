@@ -4,33 +4,34 @@
 #include <windows.h>
 #include <vector>
 
-#define WIDTH 50
-#define HEIGHT 25
+#define SCREEN_WIDTH 50
+#define SCREEN_HEIGHT 25
 
 using namespace std;
 
 class Snake
 {
 private:
-    COORD pos;
-    int vel;
-    char dir;
-    int len;
+    COORD snakePosition;                // position of snake in the level
     vector<COORD> body;
 
+    int snakeVelocity;                  // snake velocity
+    int snakeDirection;                // direction of the snake
+    int snakeLength;                   // length of the snake
+
 public:
-    Snake(COORD pos, int vel);
+    Snake(COORD initialPosition, int initialVelocity);
 
-    void grow();
-    void move_snake();
-    void direction(char dir);
+    void Grow();                                          // increase the snake length
+    void MoveSnake();                                    // to move the snake
+    void Direction(char changedDirection);               // changes the snakes direction
 
-    vector<COORD> get_body();
+    vector<COORD> GetSnakeBody();                           // returns the new snake body
 
-    bool collided();
-    bool eaten(COORD food);
+    bool WallCollision();                                    // checks collision with the walls
+    bool FoodEaten(COORD food);
 
-    COORD get_pos();
+    COORD GetSnakePosition();                                    // returns the snake position
 };
 
 #endif // SNAKE_H

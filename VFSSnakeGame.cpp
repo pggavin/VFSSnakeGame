@@ -1,56 +1,58 @@
-#include <iostream>
-#include <conio.h>
-#include <ctime>
-
+#include "Utils.h"
 #include "Snake.h"
 #include "Food.h"
 
-#define WIDTH 50
-#define HEIGHT 25
 
-using namespace std;
-
-Snake snake({ WIDTH / 2, HEIGHT / 2 }, 1);
+Snake snake({ SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 }, 1);
 Food food;
 
 int score;
 
 void board()
 {
-    COORD snake_pos = snake.get_pos();
-    COORD food_pos = food.get_pos();
+    // gets the snakes position
+    COORD snakePosition = snake.GetSnakePosition();
+    COORD foodPosition = food.GetPosition();
 
-    vector<COORD> snake_body = snake.get_body();
+    vector<COORD> snakeBody = snake.GetSnakeBody();
 
-    cout << "SCORE : " << score << "\n\n";
+    PRINT("SCORE : ", score);
 
-    for (int i = 0; i < HEIGHT; i++)
+    for (int i = 0; i < SCREEN_HEIGHT; i++)
     {
-        cout << "\t\t#";
-        for (int j = 0; j < WIDTH - 2; j++)
-        {
-            if (i == 0 || i == HEIGHT - 1) cout << '#';
+        DRAW("\t\t|");    
+        for (int j = 0; j < SCREEN_WIDTH - 2; j++)                                          // creating the height boundary    
+        {   
+            if (i == 0 || i == SCREEN_HEIGHT - 1)                                       // creating the width boundary
+            {
+                DRAW('-');
+            }
 
-            else if (i == snake_pos.Y && j + 1 == snake_pos.X) cout << '0';
-            else if (i == food_pos.Y && j + 1 == food_pos.X) cout << '@';
-
+            else if (i == snakePosition.Y && j + 1 == snakePosition.X)                      // generate the snake body
+            {
+                DRAW('0');
+            }
+            else if (i == foodPosition.Y && j + 1 == foodPosition.X)                        // generate the food in level
+            {
+                DRAW('@');
+            }
             else
             {
                 bool isBodyPart = false;
-                for (int k = 0; k < snake_body.size() - 1; k++)
+                for (int k = 0; k < snakeBody.size() - 1; k++)                          // increasing the size of snake 
                 {
-                    if (i == snake_body[k].Y && j + 1 == snake_body[k].X)
+                    if (i == snakeBody[k].Y && j + 1 == snakeBody[k].X)                 // making the rest of the body if the snake consumes food
                     {
-                        cout << 'o';
+                        DRAW('o');
                         isBodyPart = true;
                         break;
                     }
                 }
 
-                if (!isBodyPart) cout << ' ';
+                if (!isBodyPart) DRAW(' ');
             }
         }
-        cout << "#\n";
+        DRAW("|\n");
     }
 }
 
@@ -59,36 +61,47 @@ int main()
     score = 0;
     srand(time(NULL));
 
-    food.gen_food();
+    food.GenerateFood();                                // calling the generate food in the main function to get the first element also as random
 
-    char game_over = false;
+    char game_over = false;                             // game over loop
 
     while (!game_over)
     {
-        board();
+        board();                                        // creating the board
 
-        if (kbhit())
+        if (_kbhit())                                   // checks the console for key strokes
         {
-            switch (getch())
+            switch (_getch())                           // gets the key stroke for keyboard strokes
             {
-            case 'w': snake.direction('u'); break;
-            case 'a': snake.direction('l'); break;
-            case 's': snake.direction('d'); break;
-            case 'd': snake.direction('r'); break;
+            case 'w': 
+                snake.Direction('1'); 
+                break;          
+            case 'a': 
+                snake.Direction('3'); 
+                break;
+            case 's': 
+                snake.Direction('2'); 
+                break;
+            case 'd': 
+                snake.Direction('4'); 
+                break;
             }
         }
 
-        if (snake.collided()) game_over = true;
-
-        if (snake.eaten(food.get_pos()))
+        if (snake.WallCollision())                      // if the snake collides with the wall then game over
         {
-            food.gen_food();
-            snake.grow();
-            score = score + 10;
+            game_over = true;
         }
 
-        snake.move_snake();
+        if (snake.FoodEaten(food.GetPosition()))                    // if the snake has eaten the food
+        {
+            food.GenerateFood();                                    // generate new food item
+            snake.Grow();                                           // increase the snake length
+            score = score + 10;                                     // increase the score
+        }
 
-        SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, 0 });
+        snake.MoveSnake();
+
+        SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, 0 });         // removes the flickering screen
     }
 }

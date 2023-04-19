@@ -1,9 +1,12 @@
 #include "Food.h"
 
-void Food::gen_food()
+void Food::GenerateFood()                                       // generates the food at a random location
 {
-    pos.X = (rand() % WIDTH - 3) + 1;
-    pos.Y = (rand() % HEIGHT - 3) + 1;
+    foodPosition.X = (rand() % SCREEN_WIDTH - 3) + 1;
+    foodPosition.Y = (rand() % SCREEN_HEIGHT - 3) + 1;
 }
 
-COORD Food::get_pos() { return pos; }
+COORD Food::GetPosition()               // returns the generated food location
+{ 
+    return foodPosition; 
+}

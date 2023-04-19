@@ -4,18 +4,18 @@
 #include <windows.h>
 #include <cstdio>
 
-#define WIDTH 50
-#define HEIGHT 25
+#define SCREEN_WIDTH 50
+#define SCREEN_HEIGHT 25
 
 class Food
 {
 private:
-    COORD pos;
+    COORD foodPosition;                 // location of the food 
 
 public:
-    void gen_food();
+    void GenerateFood();                    // generates food on random location
 
-    COORD get_pos();
+    COORD GetPosition();                    // returns the food position
 };
 
 #endif // FOOD_H

@@ -1,49 +1,91 @@
 #include "Snake.h"
 
-Snake::Snake(COORD pos, int vel)
+Snake::Snake(COORD initialPosition, int initialVelocity)
 {
-    this->pos = pos;
-    this->vel = vel;
+    this->snakePosition = initialPosition;
+    this->snakeVelocity = initialVelocity;
 
-    dir = 'n';
-    len = 1;
+    snakeDirection = 'n';
+    snakeLength = 1;                                            // initial Snake Length
 
-    body.push_back(pos);
+    body.push_back(initialPosition);                            // using a list to make the snake grow in size
 }
 
-void Snake::direction(char dir) { this->dir = dir; }
-void Snake::grow() { len++; }
-COORD Snake::get_pos() { return pos; }
+void Snake::Direction(char changedDirection)                // changes the snakes direction
+{ 
+    this->snakeDirection = changedDirection; 
+}   
+        
+void Snake::Grow()                                          // increases the snake length
+{ 
+    snakeLength++; 
+}
 
-vector<COORD> Snake::get_body() { return body; }
+COORD Snake::GetSnakePosition()                                      // returns the updated position
+{ 
+    return snakePosition; 
+}
 
-void Snake::move_snake()
+vector<COORD> Snake::GetSnakeBody()                                 // returns the updated snake body
+{ 
+    return body; 
+}        
+
+void Snake::MoveSnake()                                // move the snake up and down
 {
-    switch (dir)
+    switch (snakeDirection)
     {
-    case 'u': pos.Y -= vel; break;
-    case 'd': pos.Y += vel; break;
-    case 'l': pos.X -= vel; break;
-    case 'r': pos.X += vel; break;
+    case '1': 
+        snakePosition.Y -= snakeVelocity;            // decrease the snake's y co-ordinate to move up
+        break;                                      
+    case '2': 
+        snakePosition.Y += snakeVelocity;           // increase the snake's y co-ordinate to move down
+        break;                                      
+    case '3': 
+        snakePosition.X -= snakeVelocity;           // decrease the snake's x co-ordinate to move left
+        break;                                      
+    case '4': 
+        snakePosition.X += snakeVelocity;           // increase the snake's x co-ordinate to move right
+        break;                                      
     }
 
-    body.push_back(pos);
-    if (body.size() > len) body.erase(body.begin());
+    if(snakePosition.X > SCREEN_WIDTH - 2)          // if the snake collides with the side walls then spawn from the opposite wall
+    {
+        snakePosition.X = 0;
+    }
+
+    if (snakePosition.X < 1)                            // if the snake collides with the side walls then spawn from the opposite wall
+    {
+        snakePosition.X = SCREEN_WIDTH - 2;
+    }
+
+
+    body.push_back(snakePosition);
+    if (body.size() > snakeLength) body.erase(body.begin());            // removes the first snake element from list
 }
 
-bool Snake::collided()
+bool Snake::WallCollision()
 {
-    if (pos.X < 1 || pos.X > WIDTH - 2 || pos.Y < 1 || pos.Y > HEIGHT - 2) return true;
-
-    for (int i = 0; i < len - 1; i++)
+    if (snakePosition.X < 1 || snakePosition.X > SCREEN_WIDTH - 2 || snakePosition.Y < 1 || snakePosition.Y > SCREEN_HEIGHT - 2)        // if the snake touches the bounds
     {
-        if (pos.X == body[i].X && pos.Y == body[i].Y) return true;
+        return true;
+    }
+
+    for (int i = 0; i < snakeLength - 1; i++)
+    {
+        if (snakePosition.X == body[i].X && snakePosition.Y == body[i].Y)                       // if the snake collides with its own body part
+        {
+            return true;
+        }
     }
     return false;
 }
 
-bool Snake::eaten(COORD food)
+bool Snake::FoodEaten(COORD food)
 {
-    if (pos.X == food.X && pos.Y == food.Y) return true;
+    if (snakePosition.X == food.X && snakePosition.Y == food.Y)             // if the snake position is same as the food position
+    {
+        return true;
+    }
     return false;
 }
