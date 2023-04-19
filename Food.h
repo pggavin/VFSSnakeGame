@@ -3,9 +3,7 @@
 
 #include <windows.h>
 #include <cstdio>
-
-#define WIDTH 50
-#define HEIGHT 25
+#include "GameData.h"
 
 class Food
 {
@@ -15,7 +13,7 @@ private:
 public:
     void gen_food();
 
-    COORD get_pos();
+    COORD get_pos() const;
 };
 
 #endif // FOOD_H

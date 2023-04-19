@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <conio.h>
 #include <ctime>
 
@@ -8,58 +8,19 @@
 #include <chrono>
 #include <thread>
 
-#include <windows.h>
-
-#define BOARD_HEIGHT 25
-#define BOARD_WIDTH 25
+#include "SoundPlayer.h"
+#include "Renderer.h"
 
 using namespace std;
+void update(Snake& snake, Food& food, bool& game_over, int& score);
 
 Snake snake({ WIDTH / 2, HEIGHT / 2 }, 1);
 Food food;
 
 int score;
 
-std::vector<std::vector<char>> lastBoard(BOARD_HEIGHT, std::vector<char>(BOARD_WIDTH, ' '));
-
-void board()
-{
-    COORD snake_pos = snake.get_pos();
-    COORD food_pos = food.get_pos();
-
-    vector<COORD> snake_body = snake.get_body();
-
-    cout << "SCORE : " << score << "\n\n";
-
-    for (int i = 0; i < HEIGHT; i++)
-    {
-        cout << "\t\t##";
-        for (int j = 0; j < WIDTH - 2; j++)
-        {
-            if (i == 0 || i == HEIGHT - 1) cout << "##";
-
-            else if (i == snake_pos.Y && j + 1 == snake_pos.X) cout << "()";
-            else if (i == food_pos.Y && j + 1 == food_pos.X) cout << "O-";
-
-            else
-            {
-                bool isBodyPart = false;
-                for (int k = 0; k < snake_body.size() - 1; k++)
-                {
-                    if (i == snake_body[k].Y && j + 1 == snake_body[k].X)
-                    {
-                        cout << "<>";
-                        isBodyPart = true;
-                        break;
-                    }
-                }
-
-                if (!isBodyPart) cout << "  ";
-            }
-        }
-        cout << "##\n";
-    }
-}
+SoundPlayer collect_sound = SoundPlayer{"EatApple.wav"};
+SoundPlayer lose_sound = SoundPlayer{ "HitSomething.wav" };
 
 int main()
 {
@@ -72,37 +33,54 @@ int main()
 
         food.gen_food();
 
-        char game_over = false;
+        bool game_over = false;
 
         while (!game_over)
         {
-            board();
+            // Call the update function to update the game state and render the game
+            update(snake, food, game_over, score);
 
-            if (_kbhit())
-            {
-                switch (_getch())
-                {
-                case 'w': snake.direction('u'); break;
-                case 'a': snake.direction('l'); break;
-                case 's': snake.direction('d'); break;
-                case 'd': snake.direction('r'); break;
-                }
-            }
+            // Sleep for a short period to control the game speed
+            this_thread::sleep_for(chrono::milliseconds(75));
 
-            if (snake.collided()) game_over = true;
-
-            if (snake.eaten(food.get_pos()))
-            {
-                food.gen_food();
-                snake.grow();
-                score = score + 10;
-            }
-
-            snake.move_snake();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
+            // Clear the console before the next frame is rendered
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, 0 });
         }
     }
+}
+
+void update(Snake& snake, Food& food, bool& game_over, int& score)
+{
+    // Handle user input
+    if (_kbhit())
+    {
+        switch (_getch())
+        {
+            case 'w': snake.change_direction(UP); break;
+            case 'a': snake.change_direction(LEFT); break;
+            case 's': snake.change_direction(DOWN); break;
+            case 'd': snake.change_direction(RIGHT); break;
+        }
+    }
+
+    // Update the game state
+    if (snake.collided())
+    {
+        game_over = true;
+        lose_sound.Play();
+        return;
+    }
+
+    if (snake.eaten(food.get_pos()))
+    {
+        food.gen_food();
+        snake.grow();
+        collect_sound.Play();
+        score += 10;
+    }
+
+    snake.move_snake();
+
+    // Render the game
+    Renderer::render(snake, food, score);
 }

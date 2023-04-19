@@ -108,6 +108,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,12 +129,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Food.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="VFSSnakeGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoordExtensions.h" />
     <ClInclude Include="Food.h" />
+    <ClInclude Include="GameData.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Snake.h" />
+    <ClInclude Include="SoundPlayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
