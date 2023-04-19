@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <conio.h>
+#include <cstdlib>
 #include <ctime>
 
 #include "Snake.h"
@@ -11,8 +12,8 @@
 #include "SoundPlayer.h"
 #include "Renderer.h"
 
-using namespace std;
 void update(Snake& snake, Food& food, bool& game_over, int& score);
+void start_game();
 
 Snake snake({ WIDTH / 2, HEIGHT / 2 }, 1);
 Food food;
@@ -26,14 +27,9 @@ int main()
 {
     while (true)
     {
-        snake.reset();
-
-        score = 0;
-        srand(time(NULL));
-
-        food.gen_food();
-
+        start_game();
         bool game_over = false;
+        // Initialise stuff and set values to 0
 
         while (!game_over)
         {
@@ -83,4 +79,13 @@ void update(Snake& snake, Food& food, bool& game_over, int& score)
 
     // Render the game
     Renderer::render(snake, food, score);
+}
+
+void start_game()
+{
+    snake.reset();
+    system("cls");
+    score = 0;
+    srand(time(NULL));
+    food.gen_food();
 }
