@@ -1,9 +1,12 @@
 #include "Food.h"
 
-void Food::gen_food()
+void Food::GenerateFood()
 {
-    pos.X = (rand() % WIDTH - 3) + 1;
-    pos.Y = (rand() % HEIGHT - 3) + 1;
+    foodPosition.X = (rand() % (SCREEN_WIDTH - 2)) + 1;
+    foodPosition.Y = (rand() % (SCREEN_HEIGHT - 2)) + 1;
 }
 
-COORD Food::get_pos() { return pos; }
+const COORD* Food::GetPosition() const
+{
+    return &foodPosition;
+}

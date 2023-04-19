@@ -3,19 +3,16 @@
 
 #include <windows.h>
 #include <cstdio>
-
-#define WIDTH 50
-#define HEIGHT 25
+#include "GameData.h"
 
 class Food
 {
-private:
-    COORD pos;
-
 public:
-    void gen_food();
+    void GenerateFood();
+    const COORD* GetPosition() const;
 
-    COORD get_pos();
+private:
+    COORD foodPosition;
 };
 
 #endif // FOOD_H

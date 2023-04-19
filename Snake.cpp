@@ -1,49 +1,86 @@
 #include "Snake.h"
 
-Snake::Snake(COORD pos, int vel)
+Snake::Snake(COORD initialPosition)
 {
-    this->pos = pos;
-    this->vel = vel;
+    this->snakePosition = initialPosition;
 
-    dir = 'n';
-    len = 1;
-
-    body.push_back(pos);
+    snakeLength = 1;
+    // initial Snake Length
+    body.push_back(initialPosition);
+    // using a list to make the snake grow in size
+    snakeDirection = ZERO;
 }
 
-void Snake::direction(char dir) { this->dir = dir; }
-void Snake::grow() { len++; }
-COORD Snake::get_pos() { return pos; }
-
-vector<COORD> Snake::get_body() { return body; }
-
-void Snake::move_snake()
+// changes the snakes direction
+void Snake::ChangeDirection(COORD newDirection)
 {
-    switch (dir)
+    if (snakeDirection == (newDirection * INVERTED_COORD)) return;
+
+    snakeDirection = newDirection;
+}
+
+// increases the snake length
+void Snake::Grow()
+{
+    snakeLength++;
+}
+
+// returns the current position
+const COORD* Snake::GetSnakePosition() const
+{
+    return &snakePosition;
+}
+
+// returns the current snake body
+const vector<COORD>* Snake::GetSnakeBody() const
+{
+    return &body;
+}
+
+// move the snake in snakeDirection
+void Snake::MoveSnake()
+{
+    snakePosition += snakeDirection;
+    // add current direction to position
+    body.push_back(snakePosition);
+    if (body.size() > snakeLength) body.erase(body.begin()); // removes the first snake element from list
+}
+
+bool Snake::Collided()
+{
+    if (snakePosition.X < 1 || snakePosition.X > SCREEN_WIDTH - 2 || snakePosition.Y < 1 || snakePosition.Y > SCREEN_HEIGHT - 2)
     {
-    case 'u': pos.Y -= vel; break;
-    case 'd': pos.Y += vel; break;
-    case 'l': pos.X -= vel; break;
-    case 'r': pos.X += vel; break;
+        return true;
     }
-
-    body.push_back(pos);
-    if (body.size() > len) body.erase(body.begin());
-}
-
-bool Snake::collided()
-{
-    if (pos.X < 1 || pos.X > WIDTH - 2 || pos.Y < 1 || pos.Y > HEIGHT - 2) return true;
-
-    for (int i = 0; i < len - 1; i++)
+    // if the snake touches the bounds
+    for (int i = snakeLength - 2; i > 0; --i)
     {
-        if (pos.X == body[i].X && pos.Y == body[i].Y) return true;
+        if (snakePosition.X == body[i].X && snakePosition.Y == body[i].Y)
+        {
+            return true;
+        }
+        // if the snake collides with its own body part
     }
     return false;
 }
 
-bool Snake::eaten(COORD food)
+bool Snake::FoodEaten(COORD food)
 {
-    if (pos.X == food.X && pos.Y == food.Y) return true;
-    return false;
+    return (snakePosition.X == food.X && snakePosition.Y == food.Y);
+    // if the snake position is same as the food position
+}
+
+void Snake::Reset()
+{
+    // Generate a random position for the snake
+    COORD new_pos = { rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT };
+
+    // Create a new Snake object with the random position and initial length of 1
+    Snake new_snake(new_pos);
+
+    // Copy the new snake's state (position, directi, 1on, body) to this snake object
+    snakePosition = new_snake.snakePosition;
+    snakeDirection = ZERO;
+    snakeLength = new_snake.snakeLength;
+    body = new_snake.body;
 }
