@@ -60,7 +60,7 @@ void update(Snake& snake, Food& food, bool& game_over, int& score)
         return;
     }
 
-    if (snake.eaten(food.get_pos()))
+    if (snake.eaten(*food.get_pos()))
     {
         food.gen_food();
         snake.grow();

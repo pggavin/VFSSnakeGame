@@ -8,14 +8,6 @@ using namespace std;
 
 class Snake
 {
-private:
-    COORD pos;
-    int vel;
-    COORD m_direction;
-
-    int len;
-    vector<COORD> body;
-
 public:
     Snake(COORD pos, int vel);
 
@@ -24,14 +16,22 @@ public:
 
     void change_direction(COORD newDirection);
 
-    vector<COORD> get_body() const;
 
     bool collided();
     bool eaten(COORD food);
 
-    COORD get_pos() const;
+    const vector<COORD>* get_body() const;
+    const COORD* get_pos() const;
 
     void reset();
+
+private:
+    COORD pos;
+    int vel;
+    COORD m_direction;
+
+    int len;
+    vector<COORD> body;
 };
 
 #endif // SNAKE_H

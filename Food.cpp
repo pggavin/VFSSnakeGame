@@ -6,7 +6,7 @@ void Food::gen_food()
     pos.Y = (rand() % (HEIGHT - 2)) + 1;
 }
 
-COORD Food::get_pos() const
+const COORD* Food::get_pos() const
 {
-    return pos;
+    return &pos;
 }

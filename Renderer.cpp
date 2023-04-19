@@ -1,3 +1,4 @@
+#include <array>
 #include "Renderer.h"
 #include "GameData.h"
 
@@ -6,51 +7,59 @@
 
 void Renderer::render(const Snake& snake, const Food& food, int score)
 {
-    COORD snake_pos = snake.get_pos();
-    COORD food_pos = food.get_pos();
-    vector<COORD> snake_body = snake.get_body();
+    const COORD* snake_pos = snake.get_pos();
+    const COORD* food_pos = food.get_pos();
+    const vector<COORD>* snake_body = snake.get_body();
 
+    array<array<string, WIDTH>, HEIGHT> board;
+
+    // Initialize the game board with empty spaces and walls
+    for (int i = 0; i < HEIGHT; i++)
+    {
+        for (int j = 0; j < WIDTH; j++)
+        {
+            if (i == 0 || i == HEIGHT - 1 || j == 0 || j == WIDTH - 1) {
+                board[i][j] = WALL;
+            }
+            else {
+                board[i][j] = EMPTY;
+            }
+        }
+    }
+
+    // Place snake body
+    for (const auto& body_part : *snake_body)
+    {
+        board[body_part.Y][body_part.X] = SNAKE_BODY;
+    }
+
+    // Place snake head
+    board[snake_pos->Y][snake_pos->X] = SNAKE_HEAD;
+
+    // Place food
+    board[food_pos->Y][food_pos->X] = FRUIT;
+
+    // Render the game board
     string buffer;
     buffer.reserve((WIDTH + 1) * HEIGHT);
-
     buffer += "SCORE : " + to_string(score) + "\n\n";
 
     for (int i = 0; i < HEIGHT; i++)
     {
-        buffer += LEFT_WALL;
-
-        for (int j = 0; j < WIDTH - 2; j++)
-        {
-            string tile = EMPTY;
-
-            if (i == 0 || i == HEIGHT - 1)
-            {
-                tile = WALL;
-            }
-            else if (i == snake_pos.Y && j + 1 == snake_pos.X)
-            {
-                tile = SNAKE_HEAD;
-            }
-            else if (i == food_pos.Y && j + 1 == food_pos.X)
-            {
-                tile = FRUIT;
-            }
-            else
-            {
-                for (int k = 0; k < snake_body.size() - 1; k++)
-                {
-                    if (i == snake_body[k].Y && j + 1 == snake_body[k].X)
-                    {
-                        tile = SNAKE_BODY;
-                        break;
-                    }
-                }
-            }
-
-            buffer += tile;
+        if (i != 0) {
+            buffer += "\n";
         }
 
-        buffer += RIGHT_WALL;
+        if (i == 0 || i == HEIGHT - 1) {
+            buffer += string(WIDTH * 2, '#');
+        }
+
+        else
+        {
+            for (int j = 0; j < WIDTH; j++) {
+                buffer += board[i][j];
+            }
+        }
     }
 
     cout << buffer;

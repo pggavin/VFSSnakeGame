@@ -7,13 +7,12 @@
 
 class Food
 {
-private:
-    COORD pos;
-
 public:
     void gen_food();
+    const COORD* get_pos() const;
 
-    COORD get_pos() const;
+private:
+    COORD pos;
 };
 
 #endif // FOOD_H

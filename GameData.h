@@ -15,5 +15,3 @@
 
 #define EMPTY "  "
 #define WALL "##"
-#define LEFT_WALL "\t\t##"
-#define RIGHT_WALL "##\n"

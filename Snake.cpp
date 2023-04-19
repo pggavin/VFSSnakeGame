@@ -26,14 +26,14 @@ void Snake::grow()
     len++;
 }
 
-COORD Snake::get_pos() const
+const COORD* Snake::get_pos() const
 {
-    return pos;
+    return &pos;
 }
 
-vector<COORD> Snake::get_body() const
+const vector<COORD>* Snake::get_body() const
 {
-    return body;
+    return &body;
 }
 
 void Snake::move_snake()
